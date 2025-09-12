@@ -1,12 +1,16 @@
-#import json
+
 import requests
 
+ANIMAL_FILE = "animals.html"
+
+def get_user_input():
+    """ Get the user input for a chosen animal"""
+    animal = input("\nEnter the name of an animal: ").strip().lower()
+    return animal
+
+
 def load_data(animal):
-    """
-    load data from Animals API
-    """
-    # with open(file_path, "r") as handle:
-    #     return json.load(handle)
+    """ Load data from Animals API"""
     ANIMAL = animal
     url = f"https://api.api-ninjas.com/v1/animals?name={ANIMAL}"
     params = {"X-Api-Key": "sqxq+uQNGhWNlbY7oYFbmg==hYHrc0liP2QMeFKH"}
@@ -33,10 +37,11 @@ def read_html(file_name):
 
 def write_html(html_text, file_name):
     """
-    write an html file
+    write a html file
     """
     with open(file_name, "w", encoding="utf-8") as h:
         h.write(html_text)
+        print(f"Website was successful generated to the file {file_name}")
 
 
 def generate_string(animals_data):
@@ -61,11 +66,12 @@ def generate_string(animals_data):
 
 
 def main():
-    animals_data = load_data("fox")
+    input_animal = get_user_input()
+    animals_data = load_data(input_animal)
     animals_string = generate_string(animals_data)
     html_template = read_html("animals_template.html")
     new_html = html_template.replace("__REPLACE_ANIMALS_INFO__", animals_string)
-    write_html(new_html, "animals_data.html")
+    write_html(new_html, ANIMAL_FILE)
 
 
 if __name__ == "__main__":
