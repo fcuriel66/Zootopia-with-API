@@ -1,10 +1,29 @@
-import data_fetcher
-ANIMAL_FILE = "animals.html"
+
+import requests
+
+ANIMAL_FILE = "../animals.html"
 
 def get_user_input():
     """ Get the user input for a chosen animal"""
     animal = input("\nEnter the name of an animal: ").strip().lower()
     return animal
+
+
+def load_data(animal):
+    """ Load data from Animals API"""
+    ANIMAL = animal
+    url = f"https://api.api-ninjas.com/v1/animals?name={ANIMAL}"
+    params = {"X-Api-Key": "sqxq+uQNGhWNlbY7oYFbmg==hYHrc0liP2QMeFKH"}
+
+    response = requests.get(url, params=params)
+    if response.status_code == 200 and response.json() != []:
+        data = response.json()
+        return data
+    else:
+        print("Response code:", response.status_code)
+        print(f"Animal {ANIMAL} NOT found")
+        no_such_animal = [ANIMAL]  ### CHECK IF WORKING
+        return no_such_animal
 
 
 def read_html(file_name):
@@ -29,7 +48,7 @@ def generate_string(animals_data):
     if len(animals_data) == 1:
         no_output = f"<h2>The animal {animals_data[0]} doesn't exist.</h2>"
         return no_output
-    output = ""         # define an empty string
+    output = ""     # define empty string
     for animal in animals_data:
         # append info to each string of info
         output += '<li class="cards__item">'
@@ -37,7 +56,7 @@ def generate_string(animals_data):
         output += f'<p class="card__text"><br/>\n'
         output += f"<strong>Diet:</strong> {animal["characteristics"]["diet"]}<br/>\n"
         output += f"<strong>Location:</strong> {animal["locations"][0]}<br/>\n"
-        # add data of type value only if it exists in orig. data
+        # add data of type value only if it exist in orig. data
         if "type" in animal["characteristics"]:
             output += f"<strong>Type:</strong> {animal["characteristics"]["type"]}<br/>\n"
             output += "</p>"
@@ -50,9 +69,9 @@ def generate_string(animals_data):
 
 def main():
     input_animal = get_user_input()
-    animals_data = data_fetcher.fetch_data(input_animal)
+    animals_data = load_data(input_animal)
     animals_string = generate_string(animals_data)
-    html_template = read_html("animals_template.html")
+    html_template = read_html("../animals_template.html")
     new_html = html_template.replace("__REPLACE_ANIMALS_INFO__", animals_string)
     write_html(new_html, ANIMAL_FILE)
 
