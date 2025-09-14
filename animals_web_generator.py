@@ -22,8 +22,8 @@ def load_data(animal):
     else:
         print("Response code:", response.status_code)
         print(f"Animal {ANIMAL} NOT found")
-        empty_list = []
-        return empty_list
+        no_such_animal = [ANIMAL]  ### CHECK IF WORKING
+        return no_such_animal
 
 
 def read_html(file_name):
@@ -45,13 +45,15 @@ def write_html(html_text, file_name):
 
 
 def generate_string(animals_data):
+    if len(animals_data) == 1:
+        no_output = f"<h2>The animal {animals_data[0]} doesn't exist.</h2>"
+        return no_output
     output = ""     # define empty string
     for animal in animals_data:
         # append info to each string of info
         output += '<li class="cards__item">'
         output += f'<div class="card__title">{animal["name"]}</div>'
         output += f'<p class="card__text"><br/>\n'
-        #output += f"Name: {animal["name"]}<br/>\n"
         output += f"<strong>Diet:</strong> {animal["characteristics"]["diet"]}<br/>\n"
         output += f"<strong>Location:</strong> {animal["locations"][0]}<br/>\n"
         # add data of type value only if it exist in orig. data
